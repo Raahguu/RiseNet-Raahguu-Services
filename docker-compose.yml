@@ -1,0 +1,27 @@
+services:
+  proxy:
+    build: ./nginx/.
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/http-only.conf:/etc/nginx/http-only.conf
+      - ./nginx/netbird:/var/lib/netbird
+      - ./nginx/certificates/:/etc/letsencrypt/
+      - ./nginx/log/:/var/log/letsencrypt/
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+  blockchain:
+    build: ./blockchain/.
+    depends_on:
+      - proxy
+    volumes:
+      - ./blockchain/log:/app/log/
+    environment:
+      - MNEMONIC=${MNEMONIC}
+  lounge:
+    image: m1k1o/chat:latest
+    restart: unless-stopped
+    depends_on:
+      - proxy

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-nohup anvil -a 1 --balance 10000000000 --mnemonic-random &
+nohup anvil --state ./log/state.json --state-interval 3600 -a 0 --mnemonic $MNEMONIC &
 
 exec python3 app.py

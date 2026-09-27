@@ -1,6 +1,13 @@
 FROM nginx:stable-alpine-slim
 
-# Install risenet
-RUN apk update && apk add netbird netbird-openrc
+# Install dependencies
+RUN apk add --no-cache netbird curl ca-certificates certbot && rm -rf /var/cache/apk/*
 
-CMD ["sh", "-c", "netbird up --management-url https://vpn.lab.st4rburn.dev --disable-firewall && nginx --with-stream_ssl_preread_module -g daemon off;"]
+# Add the risenet root cert
+COPY risenet_ca.crt /usr/local/share/ca-certificates/risenet_ca.crt
+RUN update-ca-certificates
+
+RUN mkdir -p /var/www/certbot
+
+COPY entrypoint.sh entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]

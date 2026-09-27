@@ -1,4 +1,4 @@
-FROM ghcr.io/foundry-rs/foundry:v1.83
+FROM ghcr.io/foundry-rs/foundry:v1.8.3
 
 # Install Python
 USER root
@@ -8,14 +8,14 @@ RUN apt-get update && \
         python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
-
 # Setup App
 WORKDIR /app
 
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY app.py entrypoint.sh ./
+ADD templates ./templates
 
 
 # Run Server
