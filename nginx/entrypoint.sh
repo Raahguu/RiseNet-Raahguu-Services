@@ -37,7 +37,7 @@ else
 fi
 
 # Setup CERT Renewal
-SLEEPTIME=$(awk 'BEGIN{srand(); print int(rand()*(3600+1))}'); echo "0 0,12 * * * root sleep $SLEEPTIME && certbot renew -q --post-hook nginx -s reload" | tee -a /etc/crontab > /dev/null
+SLEEPTIME=$(awk 'BEGIN{srand(); print int(rand()*(3600+1))}'); echo "0  0,12    *   *   *   sleep $SLEEPTIME && certbot renew -q --post-hook 'nginx -s reload' --force-reset" | tee -a /var/spool/cron/crontabs/root > /dev/null
 
 # Start normal nginx
 exec nginx -g 'daemon off;'
